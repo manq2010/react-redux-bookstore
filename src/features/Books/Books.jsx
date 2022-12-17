@@ -1,9 +1,11 @@
-import React, { memo, useCallback } from 'react';
+import React, {
+  memo, useCallback, useEffect, useRef,
+} from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import BookItem from './BookItem';
 // Import removeBook reducer:
-import { removeBook } from '../../redux/books/bookSlice';
+import { deleteBook, fetchBooks } from '../../redux/books/bookSlice';
 
 const Wrapper = styled.div`
 margin: 0 4% 0 4%;
@@ -180,25 +182,131 @@ const ProgressButton = styled.button`
 
 const Books = () => {
   // Get books from Redux store:
-  const books = useSelector((state) => state.booksReducer.books);
+  const {
+    books, isLoading, error, status,
+  } = useSelector((state) => state.booksReducer);
   const booksCount = books.length;
   const dispatch = useDispatch();
 
-  const handleRemove = useCallback((bookId) => {
-    dispatch(removeBook({ id: bookId }));
+  console.log(books);
+  console.log(error);
+  console.log(status);
+
+  const handleRemove = useCallback(async (bookId) => {
+    // console.log(bookId);
+    try {
+      // dispatch action to store
+      await dispatch(deleteBook({ id: bookId })).unwrap();
+      await dispatch(fetchBooks());
+    } catch (error) {
+      console.log(`Failed to delete the book ${error}`);
+    }
   },
   [dispatch]);
 
+  const dataFetchedRef = useRef(false);
+
+  useEffect(() => {
+    if (dataFetchedRef.current) return;
+    dispatch(fetchBooks());
+    dataFetchedRef.current = true;
+  }, []);
+
+  if (isLoading) {
+    return (
+      <Wrapper className="loading">
+        <h2>Loading...</h2>
+      </Wrapper>
+    );
+  }
+
+  let content;
+
+  if (status === 'loading') {
+    content = <div>Loading...</div>;
+  } else if (status === 'succeeded') {
+    // change the order of the posts
+    const orderedBooks = books.slice().sort((a, b) => a - b);
+
+    content = orderedBooks.map((book) => (
+      // <TableData key={i} post={book} />
+
+      <BookListItem key={book.item_id}>
+        <BookInfo>
+          <BookDetails>
+            <BookCategory>{book.category}</BookCategory>
+            <BookTitle>{book.title}</BookTitle>
+            <BookAuthor>{book.author}</BookAuthor>
+          </BookDetails>
+          <BookButtonWrapper>
+            <Button type="button">Comments</Button>
+            <VerticalDivider />
+            <Button
+              type="button"
+              onClick={() => handleRemove(book.item_id)}
+            >
+              Remove
+            </Button>
+            <VerticalDivider />
+            <Button type="button">Edit</Button>
+          </BookButtonWrapper>
+        </BookInfo>
+        <BookProgressWrapper>
+          <CircularProgressContainer>
+            <CircularProgress />
+          </CircularProgressContainer>
+          <ProgressStatus>
+            <PercentateComplete>80%</PercentateComplete>
+            <Completed>Completed</Completed>
+          </ProgressStatus>
+          <VerticalProgressDivider />
+          <CurrentChapterContainer>
+            <div>
+              <ChapterLabel>
+                CURRENT CHAPTER
+              </ChapterLabel>
+              <CurrentChapter>
+                Chapter 3: &quot;A Lesson Learned&quot;
+              </CurrentChapter>
+            </div>
+            <div>
+              <ProgressButton
+                type="submit"
+              >
+                UPDATE PROGRESS
+              </ProgressButton>
+            </div>
+          </CurrentChapterContainer>
+        </BookProgressWrapper>
+      </BookListItem>
+
+    ));
+  } else if (status === 'failed') {
+    content = (
+      <>
+        <h1>Books not found</h1>
+        <p className="text-center text-danger">{error}</p>
+      </>
+    );
+  }
+
   return (
     <Wrapper>
-      <h1>
-        Books in collection:
-        {' '}
-        {booksCount}
-      </h1>
-      {books
+      {isLoading ? (
+        <h2>Loading</h2>
+      ) : (
+        <h1>
+          Books in collection:
+          {' '}
+          {booksCount}
+        </h1>
+      )}
+
+      {content}
+
+      {/* {books
           && books.map((book) => (
-            <BookListItem key={book.id}>
+            <BookListItem key={book.item_id}>
               <BookInfo>
                 <BookDetails>
                   <BookCategory>{book.category}</BookCategory>
@@ -210,7 +318,7 @@ const Books = () => {
                   <VerticalDivider />
                   <Button
                     type="button"
-                    onClick={() => handleRemove(book.id)}
+                    onClick={() => handleRemove(book.item_id)}
                   >
                     Remove
                   </Button>
@@ -246,7 +354,7 @@ const Books = () => {
                 </CurrentChapterContainer>
               </BookProgressWrapper>
             </BookListItem>
-          ))}
+          ))} */}
       <BookItem />
     </Wrapper>
   );

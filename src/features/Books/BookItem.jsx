@@ -4,7 +4,7 @@ import React, {
 import { useDispatch } from 'react-redux';
 import { v4 as uuidV4 } from 'uuid';
 import styled from 'styled-components';
-import { addBook } from '../../redux/books/bookSlice';
+import { addBook, fetchBooks } from '../../redux/books/bookSlice';
 
 const AddBookHeader = styled.h2`
   font-family: "Montserrat",sans-serif;
@@ -87,7 +87,7 @@ const BookItem = () => {
   };
 
   // Add form onSubmit handler:
-  const handleSubmit = useCallback((e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     const { title, author, category } = values;
     if (title && author) {
@@ -97,7 +97,8 @@ const BookItem = () => {
         id: uuidV4(),
         category: category || 'Action',
       };
-      dispatch(addBook(bookArray));
+      await dispatch(addBook(bookArray));
+      await dispatch(fetchBooks());
       setValues('');
     }
   },
