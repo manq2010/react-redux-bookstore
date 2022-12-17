@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState, memo, useCallback,
+} from 'react';
 import { useDispatch } from 'react-redux';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidV4 } from 'uuid';
 import styled from 'styled-components';
-import { AddBook, LoadBooks } from '../../redux/books/books';
+import { addBook } from '../../redux/books/bookSlice';
 
 const AddBookHeader = styled.h2`
   font-family: "Montserrat",sans-serif;
@@ -74,7 +76,9 @@ const BookItem = () => {
     category: '',
   };
 
+  // Create form states:
   const [values, setValues] = useState(valueInitialState);
+  // Prepare Redux dispatch method:
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
@@ -82,26 +86,22 @@ const BookItem = () => {
     setValues({ ...values, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  // Add form onSubmit handler:
+  const handleSubmit = useCallback((e) => {
     e.preventDefault();
     const { title, author, category } = values;
     if (title && author) {
       const bookArray = {
         title,
         author,
-        id: uuidv4(),
+        id: uuidV4(),
         category: category || 'Action',
       };
-      // dispatch(LoadBooks());
-      dispatch(AddBook(bookArray));
-      dispatch(LoadBooks());
+      dispatch(addBook(bookArray));
       setValues('');
     }
-  };
-
-  useEffect(() => {
-    dispatch(LoadBooks());
-  }, [dispatch]);
+  },
+  [values, dispatch]);
 
   return (
     <div>
@@ -142,4 +142,4 @@ const BookItem = () => {
   );
 };
 
-export default BookItem;
+export default memo(BookItem);

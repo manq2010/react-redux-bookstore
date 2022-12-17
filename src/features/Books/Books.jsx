@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { memo, useCallback } from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import BookItem from './BookItem';
-import { RemoveBook, LoadBooks } from '../../redux/books/books';
+// Import removeBook reducer:
+import { removeBook } from '../../redux/books/bookSlice';
 
 const Wrapper = styled.div`
 margin: 0 4% 0 4%;
@@ -178,23 +179,26 @@ const ProgressButton = styled.button`
 `;
 
 const Books = () => {
-  const books = useSelector((state) => state.book.books[0]);
+  // Get books from Redux store:
+  const books = useSelector((state) => state.booksReducer.books);
+  const booksCount = books.length;
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(LoadBooks());
-  }, [dispatch]);
-
-  const handleRemove = (id) => {
-    dispatch(RemoveBook(id));
-    dispatch(LoadBooks());
-  };
+  const handleRemove = useCallback((bookId) => {
+    dispatch(removeBook({ id: bookId }));
+  },
+  [dispatch]);
 
   return (
     <Wrapper>
+      <h1>
+        Books in collection:
+        {' '}
+        {booksCount}
+      </h1>
       {books
           && books.map((book) => (
-            <BookListItem key={book.item_id}>
+            <BookListItem key={book.id}>
               <BookInfo>
                 <BookDetails>
                   <BookCategory>{book.category}</BookCategory>
@@ -206,7 +210,7 @@ const Books = () => {
                   <VerticalDivider />
                   <Button
                     type="button"
-                    onClick={() => handleRemove(book.item_id)}
+                    onClick={() => handleRemove(book.id)}
                   >
                     Remove
                   </Button>
@@ -219,7 +223,7 @@ const Books = () => {
                   <CircularProgress />
                 </CircularProgressContainer>
                 <ProgressStatus>
-                  <PercentateComplete>10%</PercentateComplete>
+                  <PercentateComplete>80%</PercentateComplete>
                   <Completed>Completed</Completed>
                 </ProgressStatus>
                 <VerticalProgressDivider />
@@ -248,4 +252,4 @@ const Books = () => {
   );
 };
 
-export default Books;
+export default memo(Books);
