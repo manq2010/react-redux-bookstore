@@ -24,7 +24,7 @@ export const fetchBooks = createAsyncThunk(
 );
 
 export const addBook = createAsyncThunk(
-  'books/addBooks',
+  'books/addBook',
   async (book) => {
     await axios.post('/books',
       {
@@ -33,6 +33,7 @@ export const addBook = createAsyncThunk(
         author: book.author,
         category: book.category,
       });
+    return book;
   },
 );
 
@@ -90,6 +91,9 @@ const bookslice = createSlice({
         state.isLoading = false;
         state.status = 'failed';
         state.error = action.error.message;
+      })
+      .addCase(addBook.fulfilled, (state, action) => {
+        state.books = [state.books, action.payload];
       })
       .addCase(deleteBook.fulfilled, (state, action) => {
         state.books = state.books.filter((book) => book.id !== action.payload.id);

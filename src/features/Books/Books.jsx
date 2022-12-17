@@ -186,11 +186,10 @@ const Books = () => {
     books, isLoading, error, status,
   } = useSelector((state) => state.booksReducer);
   const booksCount = books.length;
+  console.log(booksCount);
   const dispatch = useDispatch();
 
   console.log(books);
-  console.log(error);
-  console.log(status);
 
   const handleRemove = useCallback(async (bookId) => {
     // console.log(bookId);
