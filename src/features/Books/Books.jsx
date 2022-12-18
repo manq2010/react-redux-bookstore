@@ -113,7 +113,10 @@ const CircularProgress = styled.div`
 `;
 
 const ProgressStatus = styled.div`
-
+display: none;
+@media (min-width: 640px) {
+  display: block;
+}
 `;
 
 const PercentateComplete = styled.p`
