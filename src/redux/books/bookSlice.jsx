@@ -95,8 +95,14 @@ const bookslice = createSlice({
       .addCase(addBook.fulfilled, (state, action) => {
         state.books = [state.books, action.payload];
       })
+      .addCase(addBook.pending, (state) => {
+        state.status = 'adding';
+      })
       .addCase(deleteBook.fulfilled, (state, action) => {
         state.books = state.books.filter((book) => book.id !== action.payload.id);
+      })
+      .addCase(deleteBook.pending, (state) => {
+        state.status = 'deleting';
       });
   },
 });

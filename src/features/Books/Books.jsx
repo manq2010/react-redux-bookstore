@@ -183,7 +183,7 @@ const ProgressButton = styled.button`
 const Books = () => {
   // Get books from Redux store:
   const {
-    books, isLoading, error, status,
+    books, error, status,
   } = useSelector((state) => state.booksReducer);
   const booksCount = books.length;
   const dispatch = useDispatch();
@@ -207,22 +207,19 @@ const Books = () => {
     dataFetchedRef.current = true;
   }, [dispatch]);
 
-  // if (isLoading) {
-  //   return (
-  //     <Wrapper className="loading">
-  //       <h2>Loading...</h2>
-  //     </Wrapper>
-  //   );
-  // }
-
   let content;
 
   if (status === 'loading') {
-    content = <div>Loading...</div>;
+    content = <div> Loading...</div>;
+  } else if (status === 'adding') {
+    content = (
+      <>
+        <h1>Adding</h1>
+        {/* <p className="text-center text-danger">{error}</p> */}
+      </>
+    );
   } else if (status === 'succeeded') {
     content = books.map((book) => (
-      // <TableData key={i} post={book} />
-
       <BookListItem key={book.item_id}>
         <BookInfo>
           <BookDetails>
@@ -284,7 +281,7 @@ const Books = () => {
 
   return (
     <Wrapper>
-      {isLoading ? (
+      {/* {isLoading ? (
         <h2>Loading</h2>
       ) : (
         <h1>
@@ -292,61 +289,13 @@ const Books = () => {
           {' '}
           {booksCount}
         </h1>
-      )}
-
+      )} */}
+      <h1>
+        Books in collection:
+        {' '}
+        {booksCount}
+      </h1>
       {content}
-
-      {/* {books
-          && books.map((book) => (
-            <BookListItem key={book.item_id}>
-              <BookInfo>
-                <BookDetails>
-                  <BookCategory>{book.category}</BookCategory>
-                  <BookTitle>{book.title}</BookTitle>
-                  <BookAuthor>{book.author}</BookAuthor>
-                </BookDetails>
-                <BookButtonWrapper>
-                  <Button type="button">Comments</Button>
-                  <VerticalDivider />
-                  <Button
-                    type="button"
-                    onClick={() => handleRemove(book.item_id)}
-                  >
-                    Remove
-                  </Button>
-                  <VerticalDivider />
-                  <Button type="button">Edit</Button>
-                </BookButtonWrapper>
-              </BookInfo>
-              <BookProgressWrapper>
-                <CircularProgressContainer>
-                  <CircularProgress />
-                </CircularProgressContainer>
-                <ProgressStatus>
-                  <PercentateComplete>80%</PercentateComplete>
-                  <Completed>Completed</Completed>
-                </ProgressStatus>
-                <VerticalProgressDivider />
-                <CurrentChapterContainer>
-                  <div>
-                    <ChapterLabel>
-                      CURRENT CHAPTER
-                    </ChapterLabel>
-                    <CurrentChapter>
-                      Chapter 3: &quot;A Lesson Learned&quot;
-                    </CurrentChapter>
-                  </div>
-                  <div>
-                    <ProgressButton
-                      type="submit"
-                    >
-                      UPDATE PROGRESS
-                    </ProgressButton>
-                  </div>
-                </CurrentChapterContainer>
-              </BookProgressWrapper>
-            </BookListItem>
-          ))} */}
       <BookItem />
     </Wrapper>
   );
