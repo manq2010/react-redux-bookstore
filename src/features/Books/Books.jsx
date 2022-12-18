@@ -186,13 +186,9 @@ const Books = () => {
     books, isLoading, error, status,
   } = useSelector((state) => state.booksReducer);
   const booksCount = books.length;
-  console.log(booksCount);
   const dispatch = useDispatch();
 
-  console.log(books);
-
   const handleRemove = useCallback(async (bookId) => {
-    // console.log(bookId);
     try {
       // dispatch action to store
       await dispatch(deleteBook({ id: bookId })).unwrap();
@@ -209,25 +205,22 @@ const Books = () => {
     if (dataFetchedRef.current) return;
     dispatch(fetchBooks());
     dataFetchedRef.current = true;
-  }, []);
+  }, [dispatch]);
 
-  if (isLoading) {
-    return (
-      <Wrapper className="loading">
-        <h2>Loading...</h2>
-      </Wrapper>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <Wrapper className="loading">
+  //       <h2>Loading...</h2>
+  //     </Wrapper>
+  //   );
+  // }
 
   let content;
 
   if (status === 'loading') {
     content = <div>Loading...</div>;
   } else if (status === 'succeeded') {
-    // change the order of the posts
-    const orderedBooks = books.slice().sort((a, b) => a - b);
-
-    content = orderedBooks.map((book) => (
+    content = books.map((book) => (
       // <TableData key={i} post={book} />
 
       <BookListItem key={book.item_id}>

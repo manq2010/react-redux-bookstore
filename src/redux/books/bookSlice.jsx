@@ -19,7 +19,7 @@ export const fetchBooks = createAsyncThunk(
       item_id: key,
       ...response.data[key][0],
     }));
-    return books;
+    return books.slice().sort((a, b) => a.item_id - b.item_id);
   },
 );
 

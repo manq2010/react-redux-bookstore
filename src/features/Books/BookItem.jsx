@@ -2,7 +2,7 @@ import React, {
   useState, memo, useCallback,
 } from 'react';
 import { useDispatch } from 'react-redux';
-import { v4 as uuidV4 } from 'uuid';
+// import { v4 as uuidV4 } from 'uuid';
 import styled from 'styled-components';
 import { addBook, fetchBooks } from '../../redux/books/bookSlice';
 
@@ -94,7 +94,7 @@ const BookItem = () => {
       const bookArray = {
         title,
         author,
-        id: uuidV4(),
+        id: Date.now(),
         category: category || 'Action',
       };
       await dispatch(addBook(bookArray));
