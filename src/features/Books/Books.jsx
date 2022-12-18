@@ -8,12 +8,12 @@ import BookItem from './BookItem';
 import { deleteBook, fetchBooks } from '../../redux/books/bookSlice';
 
 const Wrapper = styled.div`
-margin: 0 4% 0 4%;
-background-color: #fafafa;
-padding: 4%;
-border-bottom-left-radius: 0.25rem;
-border-bottom-right-radius: 0.25rem;
-border-top: 1px solid gray;
+  margin: 0 4% 0 4%;
+  background-color: #fafafa;
+  padding: 4%;
+  border-bottom-left-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
+  border-top: 1px solid gray;
 `;
 
 const BookListItem = styled.li`
@@ -27,41 +27,41 @@ const BookListItem = styled.li`
   border-radius: 4px;
   border: 1px solid #e8e8e8;
   padding: 2rem;
- `;
+`;
 
 const BookInfo = styled.div``;
 
 const BookCategory = styled.h4`
   font-weight: 700;
   color: #121212;
-  font-family: "Montserrat",sans-serif;
-  font-size: .875rem;
-  opacity: .5;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.875rem;
+  opacity: 0.5;
   margin: 0;
   padding: 0;
- `;
+`;
 
 const BookTitle = styled.h2`
-  font-family: "Roboto Slab",serif;
+  font-family: "Roboto Slab", serif;
   margin-top: 0.2rem;
   font-size: 1.375rem;
-  letter-spacing: -.2px;
+  letter-spacing: -0.2px;
   font-weight: 700;
   color: #121212;
- `;
+`;
 
 const BookAuthor = styled.h6`
   margin-top: 0;
-  font-size: .875rem;
+  font-size: 0.875rem;
   font-weight: 300;
   color: #4386bf;
   margin-bottom: 0;
- `;
+`;
 
 const BookDetails = styled.div``;
 
 const BookButtonWrapper = styled.div`
-margin-top: 1rem;
+  margin-top: 1rem;
   display: flex;
   justify-content: space-between;
 `;
@@ -74,11 +74,11 @@ const VerticalDivider = styled.div`
 `;
 
 const Button = styled.button`
-  font-family: "Roboto Slab",serif;
+  font-family: "Roboto Slab", serif;
   background-color: transparent;
   border: none;
   color: #4386bf;
-  font-size: .875rem;
+  font-size: 0.875rem;
   font-weight: 300;
   align-items: center;
   cursor: pointer;
@@ -112,20 +112,18 @@ const CircularProgress = styled.div`
   transform: rotate(45deg);
 `;
 
-const ProgressStatus = styled.div`
-
-`;
+const ProgressStatus = styled.div``;
 
 const PercentateComplete = styled.p`
-  font-family: "Montserrat",sans-serif;
+  font-family: "Montserrat", sans-serif;
   color: #121212;
 `;
 
 const Completed = styled.p`
-  font-family: "Montserrat",sans-serif;
+  font-family: "Montserrat", sans-serif;
   color: #121212;
-  font-size: .875rem;
-  opacity: .5;
+  font-size: 0.875rem;
+  opacity: 0.5;
 `;
 
 const VerticalProgressDivider = styled.div`
@@ -152,18 +150,18 @@ const CurrentChapterContainer = styled.div`
 `;
 
 const ChapterLabel = styled.p`
-  font-family: "Roboto Slab",serif;
+  font-family: "Roboto Slab", serif;
   font-weight: 300;
   color: #121212;
-  font-size: .813rem;
-  opacity: .5;
+  font-size: 0.813rem;
+  opacity: 0.5;
 `;
 
 const CurrentChapter = styled.p`
   margin-top: 0.438rem;
   font-size: 1rem;
-  letter-spacing: -.4px;
-  font-family: "Roboto Slab",serif;
+  letter-spacing: -0.4px;
+  font-family: "Roboto Slab", serif;
   font-weight: 300;
   color: #121212;
 `;
@@ -174,34 +172,42 @@ const ProgressButton = styled.button`
   background-color: #0290ff;
   border-radius: 3px;
   padding: 8px 10px;
-  font-family: "Roboto Slab",serif;
+  font-family: "Roboto Slab", serif;
   font-weight: 300;
-  letter-spacing: .5px;
+  letter-spacing: 0.5px;
   color: #fff;
 `;
 
 const Books = () => {
   // Get books from Redux store:
   const {
-    books, isLoading, error, status,
-  } = useSelector((state) => state.booksReducer);
+    books,
+    isLoading,
+    isAdding,
+    // isDeleting,
+    //  error, status,
+  } = useSelector(
+    (state) => state.booksReducer,
+  );
   const booksCount = books.length;
   console.log(booksCount);
   const dispatch = useDispatch();
 
   console.log(books);
 
-  const handleRemove = useCallback(async (bookId) => {
-    // console.log(bookId);
-    try {
-      // dispatch action to store
-      await dispatch(deleteBook({ id: bookId })).unwrap();
-      await dispatch(fetchBooks());
-    } catch (error) {
-      console.log(`Failed to delete the book ${error}`);
-    }
-  },
-  [dispatch]);
+  const handleRemove = useCallback(
+    async (bookId) => {
+      // console.log(bookId);
+      try {
+        // dispatch action to store
+        await dispatch(deleteBook({ id: bookId })).unwrap();
+        await dispatch(fetchBooks());
+      } catch (error) {
+        console.log(`Failed to delete the book ${error}`);
+      }
+    },
+    [dispatch],
+  );
 
   const dataFetchedRef = useRef(false);
 
@@ -209,151 +215,75 @@ const Books = () => {
     if (dataFetchedRef.current) return;
     dispatch(fetchBooks());
     dataFetchedRef.current = true;
-  }, []);
+  }, [dispatch]);
 
-  if (isLoading) {
-    return (
-      <Wrapper className="loading">
-        <h2>Loading...</h2>
-      </Wrapper>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <Wrapper className="loading">
+  //       <h2>Loading...</h2>
+  //     </Wrapper>
+  //   );
+  // }
 
-  let content;
-
-  if (status === 'loading') {
-    content = <div>Loading...</div>;
-  } else if (status === 'succeeded') {
-    // change the order of the posts
-    const orderedBooks = books.slice().sort((a, b) => a - b);
-
-    content = orderedBooks.map((book) => (
-      // <TableData key={i} post={book} />
-
-      <BookListItem key={book.item_id}>
-        <BookInfo>
-          <BookDetails>
-            <BookCategory>{book.category}</BookCategory>
-            <BookTitle>{book.title}</BookTitle>
-            <BookAuthor>{book.author}</BookAuthor>
-          </BookDetails>
-          <BookButtonWrapper>
-            <Button type="button">Comments</Button>
-            <VerticalDivider />
-            <Button
-              type="button"
-              onClick={() => handleRemove(book.item_id)}
-            >
-              Remove
-            </Button>
-            <VerticalDivider />
-            <Button type="button">Edit</Button>
-          </BookButtonWrapper>
-        </BookInfo>
-        <BookProgressWrapper>
-          <CircularProgressContainer>
-            <CircularProgress />
-          </CircularProgressContainer>
-          <ProgressStatus>
-            <PercentateComplete>80%</PercentateComplete>
-            <Completed>Completed</Completed>
-          </ProgressStatus>
-          <VerticalProgressDivider />
-          <CurrentChapterContainer>
-            <div>
-              <ChapterLabel>
-                CURRENT CHAPTER
-              </ChapterLabel>
-              <CurrentChapter>
-                Chapter 3: &quot;A Lesson Learned&quot;
-              </CurrentChapter>
-            </div>
-            <div>
-              <ProgressButton
-                type="submit"
-              >
-                UPDATE PROGRESS
-              </ProgressButton>
-            </div>
-          </CurrentChapterContainer>
-        </BookProgressWrapper>
-      </BookListItem>
-
-    ));
-  } else if (status === 'failed') {
-    content = (
-      <>
-        <h1>Books not found</h1>
-        <p className="text-center text-danger">{error}</p>
-      </>
-    );
-  }
+  const booListMarkup = (book) => (
+    <BookListItem key={book.item_id}>
+      <BookInfo>
+        <BookDetails>
+          <BookCategory>{book.category}</BookCategory>
+          <BookTitle>{book.title}</BookTitle>
+          <BookAuthor>{book.author}</BookAuthor>
+        </BookDetails>
+        <BookButtonWrapper>
+          <Button type="button">Comments</Button>
+          <VerticalDivider />
+          <Button type="button" onClick={() => handleRemove(book.item_id)}>
+            Remove
+          </Button>
+          <VerticalDivider />
+          <Button type="button">Edit</Button>
+        </BookButtonWrapper>
+      </BookInfo>
+      <BookProgressWrapper>
+        <CircularProgressContainer>
+          <CircularProgress />
+        </CircularProgressContainer>
+        <ProgressStatus>
+          <PercentateComplete>80%</PercentateComplete>
+          <Completed>Completed</Completed>
+        </ProgressStatus>
+        <VerticalProgressDivider />
+        <CurrentChapterContainer>
+          <div>
+            <ChapterLabel>CURRENT CHAPTER</ChapterLabel>
+            <CurrentChapter>
+              Chapter 3: &quot;A Lesson Learned&quot;
+            </CurrentChapter>
+          </div>
+          <div>
+            <ProgressButton type="submit">UPDATE PROGRESS</ProgressButton>
+          </div>
+        </CurrentChapterContainer>
+      </BookProgressWrapper>
+    </BookListItem>
+  );
 
   return (
     <Wrapper>
       {isLoading ? (
-        <h2>Loading</h2>
+        <h3>
+          {isAdding ? 'Loading...' : 'Added...'}
+        </h3>
       ) : (
-        <h1>
+        <h3>
           Books in collection:
           {' '}
           {booksCount}
-        </h1>
+        </h3>
       )}
 
-      {content}
-
-      {/* {books
-          && books.map((book) => (
-            <BookListItem key={book.item_id}>
-              <BookInfo>
-                <BookDetails>
-                  <BookCategory>{book.category}</BookCategory>
-                  <BookTitle>{book.title}</BookTitle>
-                  <BookAuthor>{book.author}</BookAuthor>
-                </BookDetails>
-                <BookButtonWrapper>
-                  <Button type="button">Comments</Button>
-                  <VerticalDivider />
-                  <Button
-                    type="button"
-                    onClick={() => handleRemove(book.item_id)}
-                  >
-                    Remove
-                  </Button>
-                  <VerticalDivider />
-                  <Button type="button">Edit</Button>
-                </BookButtonWrapper>
-              </BookInfo>
-              <BookProgressWrapper>
-                <CircularProgressContainer>
-                  <CircularProgress />
-                </CircularProgressContainer>
-                <ProgressStatus>
-                  <PercentateComplete>80%</PercentateComplete>
-                  <Completed>Completed</Completed>
-                </ProgressStatus>
-                <VerticalProgressDivider />
-                <CurrentChapterContainer>
-                  <div>
-                    <ChapterLabel>
-                      CURRENT CHAPTER
-                    </ChapterLabel>
-                    <CurrentChapter>
-                      Chapter 3: &quot;A Lesson Learned&quot;
-                    </CurrentChapter>
-                  </div>
-                  <div>
-                    <ProgressButton
-                      type="submit"
-                    >
-                      UPDATE PROGRESS
-                    </ProgressButton>
-                  </div>
-                </CurrentChapterContainer>
-              </BookProgressWrapper>
-            </BookListItem>
-          ))} */}
+      {books.map((book) => (
+        booListMarkup(book)
+      ))}
       <BookItem />
     </Wrapper>
   );

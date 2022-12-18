@@ -7,6 +7,8 @@ import axios from '../../axios';
 const initialState = {
   books: [],
   isLoading: true,
+  isAdding: true,
+  isDeleting: true,
   status: 'idle',
   error: '',
 };
@@ -19,7 +21,7 @@ export const fetchBooks = createAsyncThunk(
       item_id: key,
       ...response.data[key][0],
     }));
-    return books;
+    return books.slice().sort((a, b) => a.item_id - b.item_id);
   },
 );
 
@@ -93,10 +95,18 @@ const bookslice = createSlice({
         state.error = action.error.message;
       })
       .addCase(addBook.fulfilled, (state, action) => {
+        state.isAdding = false;
         state.books = [state.books, action.payload];
       })
+      .addCase(addBook.pending, (state) => {
+        state.isAdding = true;
+      })
       .addCase(deleteBook.fulfilled, (state, action) => {
+        state.isDeleting = false;
         state.books = state.books.filter((book) => book.id !== action.payload.id);
+      })
+      .addCase(deleteBook.pending, (state) => {
+        state.isDeleting = true;
       });
   },
 });
