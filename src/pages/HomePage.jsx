@@ -34,9 +34,8 @@ const HomePage = () => (
 
     <HomeHeader>Welcome to our Book Store page!</HomeHeader>
     <ParagraphHome>
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe, quidem?
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe, quidem?
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe, quidem?
+      &quot;Bookstore&quot; is a website that allows you to display a list of books, add books to
+      and also remove a selected book from a collection.
     </ParagraphHome>
 
   </HomeWrapper>
