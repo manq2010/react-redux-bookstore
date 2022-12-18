@@ -207,89 +207,82 @@ const Books = () => {
     dataFetchedRef.current = true;
   }, [dispatch]);
 
+  const newBookList = (book) => (
+    <BookListItem key={book.item_id}>
+      <BookInfo>
+        <BookDetails>
+          <BookCategory>{book.category}</BookCategory>
+          <BookTitle>{book.title}</BookTitle>
+          <BookAuthor>{book.author}</BookAuthor>
+        </BookDetails>
+        <BookButtonWrapper>
+          <Button type="button">Comments</Button>
+          <VerticalDivider />
+          <Button
+            type="button"
+            onClick={() => handleRemove(book.item_id)}
+          >
+            Remove
+          </Button>
+          <VerticalDivider />
+          <Button type="button">Edit</Button>
+        </BookButtonWrapper>
+      </BookInfo>
+      <BookProgressWrapper>
+        <CircularProgressContainer>
+          <CircularProgress />
+        </CircularProgressContainer>
+        <ProgressStatus>
+          <PercentateComplete>80%</PercentateComplete>
+          <Completed>Completed</Completed>
+        </ProgressStatus>
+        <VerticalProgressDivider />
+        <CurrentChapterContainer>
+          <div>
+            <ChapterLabel>
+              CURRENT CHAPTER
+            </ChapterLabel>
+            <CurrentChapter>
+              Chapter 3: &quot;A Lesson Learned&quot;
+            </CurrentChapter>
+          </div>
+          <div>
+            <ProgressButton
+              type="submit"
+            >
+              UPDATE PROGRESS
+            </ProgressButton>
+          </div>
+        </CurrentChapterContainer>
+      </BookProgressWrapper>
+    </BookListItem>
+  );
+
   let content;
 
   if (status === 'loading') {
-    content = <div> Loading...</div>;
+    content = <div> Loading all books...</div>;
   } else if (status === 'adding') {
-    content = (
-      <>
-        <h1>Adding</h1>
-        {/* <p className="text-center text-danger">{error}</p> */}
-      </>
-    );
+    content = <div> Adding book...</div>;
+  } else if (status === 'added') {
+    content = <div> Book Added...</div>;
+  } else if (status === 'deleting') {
+    content = <div> Deleting Book...</div>;
+  } else if (status === 'deleted') {
+    content = <div> Book Deleted...</div>;
   } else if (status === 'succeeded') {
-    content = books.map((book) => (
-      <BookListItem key={book.item_id}>
-        <BookInfo>
-          <BookDetails>
-            <BookCategory>{book.category}</BookCategory>
-            <BookTitle>{book.title}</BookTitle>
-            <BookAuthor>{book.author}</BookAuthor>
-          </BookDetails>
-          <BookButtonWrapper>
-            <Button type="button">Comments</Button>
-            <VerticalDivider />
-            <Button
-              type="button"
-              onClick={() => handleRemove(book.item_id)}
-            >
-              Remove
-            </Button>
-            <VerticalDivider />
-            <Button type="button">Edit</Button>
-          </BookButtonWrapper>
-        </BookInfo>
-        <BookProgressWrapper>
-          <CircularProgressContainer>
-            <CircularProgress />
-          </CircularProgressContainer>
-          <ProgressStatus>
-            <PercentateComplete>80%</PercentateComplete>
-            <Completed>Completed</Completed>
-          </ProgressStatus>
-          <VerticalProgressDivider />
-          <CurrentChapterContainer>
-            <div>
-              <ChapterLabel>
-                CURRENT CHAPTER
-              </ChapterLabel>
-              <CurrentChapter>
-                Chapter 3: &quot;A Lesson Learned&quot;
-              </CurrentChapter>
-            </div>
-            <div>
-              <ProgressButton
-                type="submit"
-              >
-                UPDATE PROGRESS
-              </ProgressButton>
-            </div>
-          </CurrentChapterContainer>
-        </BookProgressWrapper>
-      </BookListItem>
-
-    ));
+    content = books.map((book) => newBookList(book));
   } else if (status === 'failed') {
     content = (
       <>
         <h1>Books not found</h1>
-        <p className="text-center text-danger">{error}</p>
+        <p>{error}</p>
       </>
     );
   }
 
   return (
     <Wrapper>
-      {/* {isLoading ? (
-        <h2>Loading</h2>
-      ) : (
-        <h1>
-          Books in collection:
-          {' '}
-          {booksCount}
-        </h1>
-      )} */}
       <h1>
         Books in collection:
         {' '}
